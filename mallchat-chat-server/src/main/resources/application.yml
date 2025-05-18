@@ -15,7 +15,7 @@ spring:
     # Redis服务器端口号
     port: ${mallchat.redis.port}
     # 使用的数据库索引，默认是0
-    database: 0
+    database: 1
     # 连接超时时间
     timeout: 1800000
     # 设置密码
@@ -32,3 +32,6 @@ wx:
         secret: ${mallchat.wx.secret} # 公众号的appsecret
         token: ${mallchat.wx.token} # 接口配置里的Token值
         aesKey: ${mallchat.wx.aesKey} # 接口配置里的EncodingAESKey值
+
+jwt:
+  secret: ${mallchat.jwt.secret}

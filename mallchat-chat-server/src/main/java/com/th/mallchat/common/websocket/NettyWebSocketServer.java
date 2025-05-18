@@ -68,7 +68,7 @@ public class NettyWebSocketServer {
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
                         ChannelPipeline pipeline = nioSocketChannel.pipeline();
                         //30秒客户端没有向服务器发送消息心跳则关闭连接
-                        pipeline.addLast(new IdleStateHandler(30,0,0));
+//                        pipeline.addLast(new IdleStateHandler(30,0,0));
                         //使用的是HTTP协议 需要HTTP解码器和编码器
                         pipeline.addLast(new HttpServerCodec());
                         // 以块方式写，添加 chunkedWriter 处理器

@@ -1,12 +1,15 @@
 package com.th.mallchat.common.user.service.handler;
 
 
+import com.th.mallchat.common.user.service.WXMsgService;
+import com.th.mallchat.common.user.service.adapter.TextBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -17,6 +20,8 @@ import java.util.Map;
 @Component
 public class SubscribeHandler extends AbstractHandler {
 
+    @Autowired
+    private WXMsgService wxMsgService;
 
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
@@ -27,7 +32,7 @@ public class SubscribeHandler extends AbstractHandler {
 
         WxMpXmlOutMessage responseResult = null;
         try {
-            responseResult = this.handleSpecial(weixinService, wxMessage);
+            responseResult = wxMsgService.scan(wxMessage);
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
@@ -37,7 +42,7 @@ public class SubscribeHandler extends AbstractHandler {
         }
 
 
-        return null;
+        return TextBuilder.build("感谢关注",wxMessage);
     }
 
     /**
