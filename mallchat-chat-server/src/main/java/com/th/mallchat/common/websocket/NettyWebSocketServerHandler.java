@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.th.mallchat.common.websocket.domain.enums.WSReqTypeEnum;
 import com.th.mallchat.common.websocket.domain.vo.request.WSBaseReq;
 import com.th.mallchat.common.websocket.service.WebSocketService;
+import com.th.mallchat.common.websocket.utils.NettyUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,13 +34,17 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete){
+            String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+            if (StrUtil.isNotBlank(token)) {
+                this.webSocketService.authorize(ctx.channel(), token);
+            }
             System.out.println("握手完成");
         }else if (evt instanceof IdleStateEvent){
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE){
                 System.out.println("读空闲");
                 //todo 用户下线
-                ctx.channel().close();
+                userOffline(ctx.channel());
             }
         }
     }
@@ -60,6 +65,9 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
                 break;
             case HEARTBEAT:
                 break;
+//            case AUTHORIZE:
+//                this.webSocketService.authorize(ctx.channel(),wsBaseReq.getData());
+//                break;
             default:
                 log.info("未知类型");
         }

@@ -104,7 +104,8 @@ public class WebSocketServiceImpl implements WebSocketService {
 
         String token = loginService.login(id);
 
-        sendMsg(channel,WebSocketAdapter.buildLoginSuccessResp(user,token));
+        loginSuccess(channel,user,token);
+
     }
 
     @Override
@@ -114,6 +115,23 @@ public class WebSocketServiceImpl implements WebSocketService {
             return;
         }
         sendMsg(channel,WebSocketAdapter.buildScanSuccessResp());
+    }
+
+    @Override
+    public void authorize(Channel channel, String token) {
+        Long validUid = loginService.getValidUid(token);
+        if (Objects.nonNull(validUid)) {
+            User user = userDao.getById(validUid);
+            loginSuccess(channel,user,token);
+        }else {
+            sendMsg(channel,WebSocketAdapter.buildInvalidTokenResp());
+        }
+    }
+
+    private void loginSuccess(Channel channel, User user, String token) {
+        WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
+        wsChannelExtraDTO.setUid(user.getId());
+        sendMsg(channel,WebSocketAdapter.buildLoginSuccessResp(user,token));
     }
 
 

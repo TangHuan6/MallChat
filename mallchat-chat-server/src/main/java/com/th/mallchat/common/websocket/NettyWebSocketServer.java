@@ -84,6 +84,7 @@ public class NettyWebSocketServer {
                          */
                         pipeline.addLast(new HttpObjectAggregator(8192));
 //                        pipeline.addLast(new HttpHeadersHandler());
+                        pipeline.addLast(new HttpHeadersHandler());
                         /**
                          * 说明：
                          *  1. 对于 WebSocket，它的数据是以帧frame 的形式传递的；
