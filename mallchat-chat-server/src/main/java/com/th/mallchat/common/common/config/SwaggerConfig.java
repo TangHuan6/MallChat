@@ -49,7 +49,7 @@ public class SwaggerConfig {
                         .version("v1.0")
                         .description("mallchat接口文档")
                         //联系人信息
-                        .contact(new Contact("阿斌", "<http://www.mallchat.cn>", "972627721@qq.com"))
+                        .contact(new Contact("Huan", "<http://www.mallchat.cn>", "2938594359@qq.com"))
                         .build())
                 .select()
                 //指定接口的位置
