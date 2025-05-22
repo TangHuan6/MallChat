@@ -6,6 +6,8 @@ import com.th.mallchat.common.user.domain.entity.ItemConfig;
 import com.th.mallchat.common.user.mapper.ItemConfigMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
 * @author 29385
 * @description 针对表【item_config(功能物品配置表)】的数据库操作Service实现
@@ -14,6 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemConfigDao extends ServiceImpl<ItemConfigMapper, ItemConfig>{
 
+    public List<ItemConfig> getByType(Integer itemType) {
+       return lambdaQuery()
+                .eq(ItemConfig::getType,itemType)
+                .list();
+    }
 }
 
 

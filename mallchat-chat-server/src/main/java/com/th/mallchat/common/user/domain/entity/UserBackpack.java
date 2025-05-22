@@ -31,10 +31,10 @@ public class UserBackpack implements Serializable {
      * 物品id
      */
     @TableField(value = "item_id")
-    private Integer itemId;
+    private Long itemId;
 
     /**
-     * 使用状态 0.待使用 1已使用
+     * 使用状态 0.未失效 1失效
      */
     @TableField(value = "status")
     private Integer status;

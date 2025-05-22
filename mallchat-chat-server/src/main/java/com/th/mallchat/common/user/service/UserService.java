@@ -3,6 +3,11 @@ package com.th.mallchat.common.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.th.mallchat.common.user.domain.entity.User;
+import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
+import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
+import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
+
+import java.util.List;
 
 /**
 * @author 29385
@@ -12,4 +17,10 @@ import com.th.mallchat.common.user.domain.entity.User;
 public interface UserService{
 
     Long register(User user);
+
+    UserInfoResp getUserInfo(Long uid);
+
+    void modifyName(Long uid, String name);
+
+    List<BadgeResp> badges(Long uid);
 }
