@@ -16,9 +16,6 @@ public class BusinessException extends RuntimeException {
      */
     protected String errorMsg;
 
-    public BusinessException() {
-        super();
-    }
 
     public BusinessException(String errorMsg) {
         super(errorMsg);
@@ -31,17 +28,6 @@ public class BusinessException extends RuntimeException {
         this.errorMsg = errorMsg;
     }
 
-    public BusinessException(Integer errorCode, String errorMsg, Throwable cause) {
-        super(errorMsg, cause);
-        this.errorCode = errorCode;
-        this.errorMsg = errorMsg;
-    }
-
-    public BusinessException(ErrorEnum error) {
-        super(error.getErrorMsg());
-        this.errorCode = error.getErrorCode();
-        this.errorMsg = error.getErrorMsg();
-    }
 
     @Override
     public String getMessage() {
