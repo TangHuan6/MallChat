@@ -1,7 +1,9 @@
 package com.th.mallchat.common.user.service.impl;
 
+import com.th.mallchat.common.common.event.UserRegisterEvent;
 import com.th.mallchat.common.common.exception.BusinessException;
 import com.th.mallchat.common.common.utils.AssertUtil;
+import com.th.mallchat.common.user.dao.ItemConfigDao;
 import com.th.mallchat.common.user.dao.UserBackpackDao;
 import com.th.mallchat.common.user.dao.UserDao;
 import com.th.mallchat.common.user.domain.entity.ItemConfig;
@@ -10,12 +12,14 @@ import com.th.mallchat.common.user.domain.entity.UserBackpack;
 import com.th.mallchat.common.user.domain.enums.ItemEnum;
 import com.th.mallchat.common.user.domain.enums.ItemTypeEnum;
 import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
+import com.th.mallchat.common.user.domain.vo.request.WearingBadgeReq;
 import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
 import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
 import com.th.mallchat.common.user.service.UserService;
 import com.th.mallchat.common.user.service.adapter.UserAdapter;
 import com.th.mallchat.common.user.service.cache.ItemCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,13 +38,19 @@ public class UserServiceImpl implements UserService {
     private UserBackpackDao userBackpackDao;
 
     @Autowired
+    private ItemConfigDao itemConfigDao;
+
+    @Autowired
     private ItemCache itemCache;
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
     @Override
-    @Transactional
     public Long register(User user) {
         userDao.save(user);
         //todo 用户注册的事件
+        applicationEventPublisher.publishEvent(new UserRegisterEvent(this,user));
         return user.getId();
     }
 
@@ -73,5 +83,19 @@ public class UserServiceImpl implements UserService {
         //查询用户当前佩戴的标签
         User user = userDao.getById(uid);
         return UserAdapter.buildBadgeResp(itemConfigs, backpacks, user);
+    }
+
+    @Override
+    public void wearingBadge(Long uid, WearingBadgeReq req) {
+        //确保有这个徽章
+        Long badgeId = req.getBadgeId();
+        UserBackpack firstValidItem = userBackpackDao.getFirstValidItem(uid, badgeId);
+        AssertUtil.isNotEmpty(firstValidItem,"您没有这个徽章哦，快去达成条件获取吧");
+        //确保物品类型是徽章
+        ItemConfig itemConfig = itemConfigDao.getById(firstValidItem.getItemId());
+        AssertUtil.equal(itemConfig.getType(),ItemTypeEnum.BADGE.getType(),"该物品不可佩戴");
+        //佩戴徽章
+        userDao.wearingBadge(uid, req.getBadgeId());
+        //删除用户缓存
     }
 }

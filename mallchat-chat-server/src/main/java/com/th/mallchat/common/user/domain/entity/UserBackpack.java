@@ -6,7 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户背包表
@@ -14,6 +18,9 @@ import lombok.Data;
  */
 @TableName(value ="user_backpack")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserBackpack implements Serializable {
     /**
      * id

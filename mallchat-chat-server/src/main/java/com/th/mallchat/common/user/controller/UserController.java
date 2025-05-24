@@ -4,6 +4,7 @@ import com.th.mallchat.common.common.domain.dto.RequestInfo;
 import com.th.mallchat.common.common.domain.vo.response.ApiResult;
 import com.th.mallchat.common.common.utils.RequestHolder;
 import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
+import com.th.mallchat.common.user.domain.vo.request.WearingBadgeReq;
 import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
 import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
 import com.th.mallchat.common.user.service.UserService;
@@ -50,6 +51,11 @@ public class UserController {
         return ApiResult.success(userService.badges(RequestHolder.get().getUid()));
     }
 
-
+    @PutMapping("/badge")
+    @ApiOperation("佩戴徽章")
+    public ApiResult<Void> wearingBadge(@Valid @RequestBody WearingBadgeReq req) {
+        userService.wearingBadge(RequestHolder.get().getUid(), req);
+        return ApiResult.success();
+    }
 
 }

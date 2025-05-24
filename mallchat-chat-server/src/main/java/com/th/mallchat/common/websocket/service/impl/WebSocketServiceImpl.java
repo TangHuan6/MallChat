@@ -19,6 +19,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +55,9 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void handleLoginReq(Channel channel) throws WxErrorException {
@@ -132,6 +136,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         wsChannelExtraDTO.setUid(user.getId());
         sendMsg(channel,WebSocketAdapter.buildLoginSuccessResp(user,token));
+        //发送用户上线事件
     }
 
 

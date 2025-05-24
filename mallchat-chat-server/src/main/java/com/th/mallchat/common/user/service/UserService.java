@@ -4,6 +4,7 @@ package com.th.mallchat.common.user.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.th.mallchat.common.user.domain.entity.User;
 import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
+import com.th.mallchat.common.user.domain.vo.request.WearingBadgeReq;
 import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
 import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
 
@@ -23,4 +24,6 @@ public interface UserService{
     void modifyName(Long uid, String name);
 
     List<BadgeResp> badges(Long uid);
+
+    void wearingBadge(Long uid, WearingBadgeReq req);
 }

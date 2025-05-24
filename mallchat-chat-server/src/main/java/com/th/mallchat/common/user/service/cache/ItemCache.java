@@ -43,6 +43,15 @@ public class ItemCache {
         return itemConfigDao.getByType(itemType);
     }
 
+    /**
+     * 单引号 'itemsByType' 是字符串字面量，即常量字符串 "itemsByType"。
+     *
+     * #itemType 是Spring EL 表达式，代表方法参数 itemType 的值。
+     *
+     * 换句话说，这个 key 表达式的结果是：
+     * "itemsByType" + itemType的值
+     * @param itemType
+     */
     @CacheEvict(cacheNames = "item",key = "'itemsByType'+#itemType")
     public void evictByType(Integer itemType) {
     }
