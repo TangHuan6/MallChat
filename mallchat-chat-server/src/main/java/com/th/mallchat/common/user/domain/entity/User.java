@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +16,10 @@ import lombok.NoArgsConstructor;
 /**
  * 用户表
  * @TableName user
+ *
  */
-@TableName(value ="user")
+//表示自动使用配置的 TypeHandler 类型处理器（比如 JSON 类型转换器）。默认是 false，需要你显式开启。
+@TableName(value ="user",autoResultMap = true)
 @Data
 @Builder
 @AllArgsConstructor
@@ -67,8 +70,9 @@ public class User implements Serializable {
     /**
      * ip信息
      */
-    @TableField(value = "ip_info")
-    private Object ipInfo;
+    //使用 Jackson JSON 序列化器将对象转为 JSON 存入数据库，或将 JSON 反序列化为 Java 对象
+    @TableField(value = "ip_info",typeHandler = JacksonTypeHandler.class)
+    private IpInfo ipInfo;
 
     /**
      * 佩戴的徽章id
@@ -96,4 +100,11 @@ public class User implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    public void refreshIp(String ip) {
+        if (ipInfo == null) {
+            ipInfo = new IpInfo();
+        }
+        ipInfo.refreshIp(ip);
+    }
 }

@@ -6,6 +6,7 @@ import com.th.mallchat.common.common.utils.JwtUtils;
 import com.th.mallchat.common.common.utils.RedisUtils;
 import com.th.mallchat.common.user.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class LoginServiceImpl implements LoginService {
         return false;
     }
 
+    @Async
     @Override
     public void renewalTokenIfNecessary(String token) {
         Long uid = getValidUid(token);
