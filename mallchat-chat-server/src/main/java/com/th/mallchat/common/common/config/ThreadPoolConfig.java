@@ -46,7 +46,6 @@ public class ThreadPoolConfig implements AsyncConfigurer {
     //表示这是默认线程池，当有多个线程池时优先选这个
     @Primary
     public ThreadPoolTaskExecutor mallchatExecutor() {
-
 //        @Override
 //        public void destroy() {
 //            shutdown();
@@ -68,7 +67,6 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 //                awaitTerminationIfNecessary(this.executor);
 //            }
 //        }
-
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
         executor.setWaitForTasksToCompleteOnShutdown(true);//优雅停机
@@ -80,4 +78,18 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         executor.initialize();
         return executor;
     }
+
+    @Bean(WS_EXECUTOR)
+    public ThreadPoolTaskExecutor websocketExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(16);
+        executor.setMaxPoolSize(16);
+        executor.setQueueCapacity(1000);//支持同时推送1000人
+        executor.setThreadNamePrefix("websocket-executor-");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());//满了直接丢弃，默认为不重要消息推送
+        executor.setThreadFactory(new MyThreadFactory(executor));
+        executor.initialize();
+        return executor;
+    }
+
 }

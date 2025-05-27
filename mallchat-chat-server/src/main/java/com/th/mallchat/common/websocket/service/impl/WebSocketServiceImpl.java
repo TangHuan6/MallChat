@@ -4,26 +4,35 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.th.mallchat.common.common.config.ThreadPoolConfig;
+import com.th.mallchat.common.common.event.UserOnlineEvent;
 import com.th.mallchat.common.user.dao.UserDao;
+import com.th.mallchat.common.user.domain.entity.IpInfo;
 import com.th.mallchat.common.user.domain.entity.User;
+import com.th.mallchat.common.user.domain.enums.RoleEnum;
 import com.th.mallchat.common.user.service.LoginService;
+import com.th.mallchat.common.user.service.RoleService;
 import com.th.mallchat.common.websocket.domain.dto.WSChannelExtraDTO;
 import com.th.mallchat.common.websocket.domain.enums.WSRespTypeEnum;
 import com.th.mallchat.common.websocket.domain.vo.response.WSBaseResp;
 import com.th.mallchat.common.websocket.domain.vo.response.WSLoginUrl;
 import com.th.mallchat.common.websocket.service.WebSocketService;
 import com.th.mallchat.common.websocket.service.adapter.WebSocketAdapter;
+import com.th.mallchat.common.websocket.utils.NettyUtil;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,6 +67,15 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    @Qualifier(ThreadPoolConfig.WS_EXECUTOR)
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+
 
     @Override
     public void handleLoginReq(Channel channel) throws WxErrorException {
@@ -132,11 +150,25 @@ public class WebSocketServiceImpl implements WebSocketService {
         }
     }
 
+    @Override
+    public void sendToAllOnline(WSBaseResp<?> resp, Long uid) {
+        ONLINE_WS_MAP.forEach((channel,ext) -> {
+            if (Objects.nonNull(uid) && Objects.equals(ext.getUid(),uid)){
+                return;
+            }
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel,resp));
+        });
+    }
+
     private void loginSuccess(Channel channel, User user, String token) {
         WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         wsChannelExtraDTO.setUid(user.getId());
-        sendMsg(channel,WebSocketAdapter.buildLoginSuccessResp(user,token));
+        boolean hasPower = roleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
+        sendMsg(channel,WebSocketAdapter.buildLoginSuccessResp(user,token,hasPower));
         //发送用户上线事件
+        user.setLastOptTime(new Date());
+        user.refreshIp(NettyUtil.getAttr(channel,NettyUtil.IP));
+        applicationEventPublisher.publishEvent(new UserOnlineEvent(this,user));
     }
 
 

@@ -15,13 +15,14 @@ public class WebSocketAdapter {
         return wsBaseResp;
     }
 
-    public static WSBaseResp<?> buildLoginSuccessResp(User user, String token) {
+    public static WSBaseResp<?> buildLoginSuccessResp(User user, String token,boolean hasPower) {
         WSBaseResp<WSLoginSuccess> resp = new WSBaseResp<>();
         resp.setType(WSRespTypeEnum.LOGIN_SUCCESS.getType());
         WSLoginSuccess wsLoginSuccess = WSLoginSuccess.builder()
                 .avatar(user.getAvatar())
                 .name(user.getName())
                 .token(token)
+                .power(hasPower ? 1 : 0)
                 .uid(user.getId())
                 .build();
         resp.setData(wsLoginSuccess);

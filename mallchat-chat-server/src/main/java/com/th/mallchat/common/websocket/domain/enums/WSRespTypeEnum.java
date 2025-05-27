@@ -1,5 +1,6 @@
 package com.th.mallchat.common.websocket.domain.enums;
 
+import com.th.mallchat.common.user.domain.vo.response.WSBlack;
 import com.th.mallchat.common.websocket.domain.vo.response.WSLoginSuccess;
 import com.th.mallchat.common.websocket.domain.vo.response.WSLoginUrl;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public enum WSRespTypeEnum {
 //    MESSAGE(4, "新消息", WSMessage.class),
 //    ONLINE_OFFLINE_NOTIFY(5, "上下线通知", WSOnlineOfflineNotify.class),
     INVALIDATE_TOKEN(6, "使前端的token失效，意味着前端需要重新登录", null),
-//    BLACK(7, "拉黑用户", WSBlack.class),
+    BLACK(7, "拉黑用户", WSBlack.class),
 //    MARK(8, "消息标记", WSMsgMark.class),
 //    RECALL(9, "消息撤回", WSMsgRecall.class),
 //    APPLY(10, "好友申请", WSFriendApply.class),

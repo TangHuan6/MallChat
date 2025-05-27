@@ -1,5 +1,6 @@
 package com.th.mallchat.common.common.config;
 
+import com.th.mallchat.common.common.interceptor.BlackInterceptor;
 import com.th.mallchat.common.common.interceptor.CollectorInterceptor;
 import com.th.mallchat.common.common.interceptor.TokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,16 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Autowired
     private CollectorInterceptor collectorInterceptor;
 
+    @Autowired
+    private BlackInterceptor blackInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/capi/**");
         registry.addInterceptor(collectorInterceptor)
+                .addPathPatterns("/capi/**");
+        registry.addInterceptor(blackInterceptor)
                 .addPathPatterns("/capi/**");
     }
 }

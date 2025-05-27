@@ -18,6 +18,9 @@ public class CollectorInterceptor implements HandlerInterceptor {
                 .map(Object::toString)
                 .map(Long::parseLong).orElse(null);
         String ip = ServletUtil.getClientIP(request);
+        if ("0:0:0:0:0:0:0:1".equals(ip) || "::1".equals(ip)) {
+            ip = "127.0.0.1";
+        }
         RequestInfo requestInfo = new RequestInfo();
         requestInfo.setIp(ip);
         requestInfo.setUid(uid);

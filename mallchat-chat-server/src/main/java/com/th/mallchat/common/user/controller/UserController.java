@@ -2,11 +2,15 @@ package com.th.mallchat.common.user.controller;
 
 import com.th.mallchat.common.common.domain.dto.RequestInfo;
 import com.th.mallchat.common.common.domain.vo.response.ApiResult;
+import com.th.mallchat.common.common.utils.AssertUtil;
 import com.th.mallchat.common.common.utils.RequestHolder;
+import com.th.mallchat.common.user.domain.enums.RoleEnum;
+import com.th.mallchat.common.user.domain.vo.request.BlackReq;
 import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
 import com.th.mallchat.common.user.domain.vo.request.WearingBadgeReq;
 import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
 import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
+import com.th.mallchat.common.user.service.RoleService;
 import com.th.mallchat.common.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @GetMapping("/test")
     public String index() {
@@ -55,6 +62,16 @@ public class UserController {
     @ApiOperation("佩戴徽章")
     public ApiResult<Void> wearingBadge(@Valid @RequestBody WearingBadgeReq req) {
         userService.wearingBadge(RequestHolder.get().getUid(), req);
+        return ApiResult.success();
+    }
+
+    @PutMapping("/black")
+    @ApiOperation("拉黑用户")
+    public ApiResult<Void> black(@Valid @RequestBody BlackReq req) {
+        Long uid = RequestHolder.get().getUid();
+        boolean hasPower = roleService.hasPower(uid, RoleEnum.ADMIN);
+        AssertUtil.isTrue(hasPower, "没有权限");
+        userService.black(req);
         return ApiResult.success();
     }
 

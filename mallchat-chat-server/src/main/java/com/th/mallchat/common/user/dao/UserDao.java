@@ -2,6 +2,7 @@ package com.th.mallchat.common.user.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.th.mallchat.common.common.domain.enums.YesOrNoEnum;
 import com.th.mallchat.common.user.domain.entity.User;
 import com.th.mallchat.common.user.mapper.UserMapper;
 import com.th.mallchat.common.user.service.UserService;
@@ -36,6 +37,13 @@ public class UserDao extends ServiceImpl<UserMapper, User>{
         lambdaUpdate()
                 .eq(User::getId, uid)
                 .set(User::getItemId,badgeId)
+                .update();
+    }
+
+    public void invalidUid(Long uid) {
+        lambdaUpdate()
+                .eq(User::getId, uid)
+                .set(User::getStatus, YesOrNoEnum.YES.getStatus())
                 .update();
     }
 }
