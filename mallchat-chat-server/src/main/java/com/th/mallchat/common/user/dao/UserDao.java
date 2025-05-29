@@ -8,6 +8,8 @@ import com.th.mallchat.common.user.mapper.UserMapper;
 import com.th.mallchat.common.user.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
 * @author 29385
 * @description 针对表【user(用户表)】的数据库操作Service实现
@@ -45,6 +47,13 @@ public class UserDao extends ServiceImpl<UserMapper, User>{
                 .eq(User::getId, uid)
                 .set(User::getStatus, YesOrNoEnum.YES.getStatus())
                 .update();
+    }
+
+    public List<User> getFriendList(List<Long> uids) {
+        return lambdaQuery()
+                .in(User::getId, uids)
+                .select(User::getId,User::getActiveStatus,User::getName,User::getAvatar)
+                .list();
     }
 }
 
