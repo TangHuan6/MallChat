@@ -2,10 +2,10 @@ package com.th.mallchat.common.user.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.th.mallchat.common.user.domain.dto.ItemInfoDTO;
+import com.th.mallchat.common.user.domain.dto.SummeryInfoDTO;
 import com.th.mallchat.common.user.domain.entity.User;
-import com.th.mallchat.common.user.domain.vo.request.BlackReq;
-import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
-import com.th.mallchat.common.user.domain.vo.request.WearingBadgeReq;
+import com.th.mallchat.common.user.domain.vo.request.*;
 import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
 import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
 
@@ -29,4 +29,8 @@ public interface UserService{
     void wearingBadge(Long uid, WearingBadgeReq req);
 
     void black(BlackReq req);
+
+    List<SummeryInfoDTO> getSummeryUserInfo(SummeryInfoReq req);
+
+    List<ItemInfoDTO> getItemInfo(ItemInfoReq req);
 }

@@ -4,10 +4,10 @@ import com.th.mallchat.common.common.domain.dto.RequestInfo;
 import com.th.mallchat.common.common.domain.vo.response.ApiResult;
 import com.th.mallchat.common.common.utils.AssertUtil;
 import com.th.mallchat.common.common.utils.RequestHolder;
+import com.th.mallchat.common.user.domain.dto.ItemInfoDTO;
+import com.th.mallchat.common.user.domain.dto.SummeryInfoDTO;
 import com.th.mallchat.common.user.domain.enums.RoleEnum;
-import com.th.mallchat.common.user.domain.vo.request.BlackReq;
-import com.th.mallchat.common.user.domain.vo.request.ModifyNameReq;
-import com.th.mallchat.common.user.domain.vo.request.WearingBadgeReq;
+import com.th.mallchat.common.user.domain.vo.request.*;
 import com.th.mallchat.common.user.domain.vo.response.BadgeResp;
 import com.th.mallchat.common.user.domain.vo.response.UserInfoResp;
 import com.th.mallchat.common.user.service.RoleService;
@@ -44,6 +44,19 @@ public class UserController {
     public ApiResult<UserInfoResp> getUserInfo(){
         return ApiResult.success(userService.getUserInfo(RequestHolder.get().getUid()));
     }
+
+    @PostMapping("/public/summary/userInfo/batch")
+    @ApiOperation("用户聚合信息-返回的代表需要刷新的")
+    public ApiResult<List<SummeryInfoDTO>> getSummeryUserInfo(@Valid @RequestBody SummeryInfoReq req) {
+        return ApiResult.success(userService.getSummeryUserInfo(req));
+    }
+
+    @PostMapping("/public/badges/batch")
+    @ApiOperation("徽章聚合信息-返回的代表需要刷新的")
+    public ApiResult<List<ItemInfoDTO>> getItemInfo(@Valid @RequestBody ItemInfoReq req) {
+        return ApiResult.success(userService.getItemInfo(req));
+    }
+
 
     @PutMapping("/name")
     @ApiOperation("修改用户名")
