@@ -1,4 +1,4 @@
-package com.th.mallchat.common.common.utils;
+package com.th.mallchat.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
